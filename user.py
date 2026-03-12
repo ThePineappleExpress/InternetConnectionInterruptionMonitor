@@ -6,16 +6,17 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
-"""User-specific details for PDF reports.
+"""Benutzerspezifische Angaben für PDF-Berichte.
 
-Fill in your personal and contract information below. These values are
-included in the generated PDF report to identify the complaining party
-and the relevant service contract.
+Tragen Sie nachfolgend Ihre persönlichen Daten und Vertragsinformationen
+ein. Diese Werte werden in den generierten PDF-Bericht aufgenommen, um
+die beschwerdeführende Partei und den zugehörigen Servicevertrag zu
+identifizieren.
 """
 
-NAME = ""
-ADDRESS = ""
-ZIP_CITY = ""
-PHONE_NUMBER = ""
-CUSTOMER_NR = ""
-CONTRACT_NR = ""
+NAME = "Mateusz Paszkowski"
+ADDRESS = "Adalbertstr. 2"
+ZIP_CITY = "01900 Großröhrsdorf"
+PHONE_NUMBER = "+49 1590 6546699"
+CUSTOMER_NR = "957866225"
+CONTRACT_NR = "100066051"

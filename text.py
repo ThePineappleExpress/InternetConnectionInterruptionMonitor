@@ -14,236 +14,241 @@ use ``str.format()``-style placeholders (``{name}``) rather than
 f-string expressions so they can be defined at import time.
 """
 
-# ── Monitor - console output ────────────────────────────────────────────
+# -- Monitor - Konsolenausgaben ------------------------------------------
 
-MONITOR_INIT_PUBLIC_IP = "  Public IP : {ip}"
-MONITOR_INIT_ISP = "  ISP       : {isp}"
-MONITOR_INIT_LOCAL_IP = "  Local IP  : {ip}"
-MONITOR_INIT_GATEWAY = "  Gateway   : {gw}"
-MONITOR_INIT_TARGETS = "  Targets   : {targets}"
-MONITOR_INIT_DNS = "  DNS test  : {domain}"
-MONITOR_INIT_SNMP_ENABLED = "  SNMP      : enabled"
-MONITOR_INIT_LOG = "  Log file  : {filename}"
+MONITOR_INIT_PUBLIC_IP = "  Öffentl. IP : {ip}"
+MONITOR_INIT_ISP = "  ISP         : {isp}"
+MONITOR_INIT_LOCAL_IP = "  Lokale IP   : {ip}"
+MONITOR_INIT_GATEWAY = "  Gateway     : {gw}"
+MONITOR_INIT_TARGETS = "  Ziele       : {targets}"
+MONITOR_INIT_DNS = "  DNS-Test    : {domain}"
+MONITOR_INIT_SNMP_ENABLED = "  SNMP        : aktiviert"
+MONITOR_INIT_LOG = "  Logdatei    : {filename}"
 
-MONITOR_SNMP_AGENT_DISABLED = "  SNMP      : agent not responding, disabling"
+MONITOR_SNMP_AGENT_DISABLED = "  SNMP        : Agent antwortet nicht, wird deaktiviert"
 
-MONITOR_LOG_WARNING = "  Warning: could not read existing log: {error}"
-MONITOR_LOG_RESUMED = "  Resumed from today's log:"
+MONITOR_LOG_WARNING = "  Warnung: Vorhandene Logdatei konnte nicht gelesen werden: {error}"
+MONITOR_LOG_RESUMED = "  Aus heutigem Log fortgesetzt:"
 MONITOR_LOG_RESUMED_DETAIL = (
-    "    Events: {events}  "
-    "Latency samples: {latency}  "
-    "DNS samples: {dns}  "
-    "DNS failures: {failures}  "
-    "Downtime: {downtime}"
+    "    Ereignisse: {events}  "
+    "Latenz-Messungen: {latency}  "
+    "DNS-Messungen: {dns}  "
+    "DNS-Fehler: {failures}  "
+    "Ausfallzeit: {downtime}"
 )
 
 MONITOR_DISCONNECTED = (
-    "[{ts}]  \u2717  Internet DISCONNECTED  "
-    "(all {count} targets unreachable, cause: {cause})"
+    "[{ts}]  \u2717  Internet GETRENNT  "
+    "(alle {count} Ziele nicht erreichbar, Ursache: {cause})"
 )
 MONITOR_RECONNECTED = (
-    "[{ts}]  \u2713  Internet RECONNECTED  "
-    "(outage lasted {duration}){changes}"
+    "[{ts}]  \u2713  Internet WIEDERVERBUNDEN  "
+    "(Ausfall dauerte {duration}){changes}"
 )
 
 MONITOR_CAUSE_ISP = "ISP"
 MONITOR_CAUSE_ROUTER = "Router/LAN"
-MONITOR_CAUSE_UNKNOWN = "Unknown"
-MONITOR_GATEWAY_NOT_DETECTED = "not detected"
+MONITOR_CAUSE_UNKNOWN = "Unbekannt"
+MONITOR_GATEWAY_NOT_DETECTED = "nicht erkannt"
 
 MONITOR_IP_CHANGED = "IP -> {ip}"
 MONITOR_ISP_CHANGED = "ISP -> {isp}"
-MONITOR_LOCATION_CHANGED = "Location -> {location}"
+MONITOR_LOCATION_CHANGED = "Standort -> {location}"
 
-MONITOR_DAILY_SAVED = "[{ts}]Daily report saved : {path}"
-MONITOR_DAILY_FAILED = "[{ts}]Report save failed: {error}"
+MONITOR_DAILY_SAVED = "[{ts}]Tagesbericht gespeichert: {path}"
+MONITOR_DAILY_FAILED = "[{ts}]Bericht speichern fehlgeschlagen: {error}"
 
 MONITOR_STARTING = (
-    "Starting internet monitor at {ts}\n"
-    "Close the window or press Ctrl+C to stop.\n"
+    "Starte Internet-Monitor um {ts}\n"
+    "Fenster schließen oder Strg+C drücken zum Beenden.\n"
 )
-MONITOR_STOP_SIGNAL = "\n\nReceived stop signal - finishing up ..."
+MONITOR_STOP_SIGNAL = "\n\nStoppsignal empfangen - wird abgeschlossen ..."
 
-# ── GUI - window and widget text ────────────────────────────────────────
+# -- GUI - Fenster- und Widget-Texte -------------------------------------
 
-GUI_WINDOW_TITLE = "Internet Connection Monitor"
+GUI_WINDOW_TITLE = "Internetverbindungs-Monitor"
 
-GUI_STATUS_CONNECTED = "\u25cf  CONNECTED"
-GUI_STATUS_DISCONNECTED = "\u25cf  DISCONNECTED"
-GUI_STATUS_CONNECTED_INIT = "\u25cf CONNECTED"
+GUI_STATUS_CONNECTED = "VERBUNDEN"
+GUI_STATUS_DISCONNECTED = "GETRENNT"
+GUI_STATUS_CONNECTED_INIT = "VERBUNDEN"
 
-GUI_LABEL_CONNECTED_TIME = "Connected time:"
-GUI_LABEL_DISCONNECTED_TIME = "Disconnected time:"
-GUI_LABEL_CONNECTIONS = "Connections (#):"
-GUI_LABEL_DISCONNECTIONS = "Disconnections (#):"
-GUI_LABEL_AVG_LATENCY = "Avg latency:"
-GUI_LABEL_DNS_STATUS = "DNS status:"
+GUI_LABEL_CONNECTED_TIME = "Verbundene Zeit:"
+GUI_LABEL_DISCONNECTED_TIME = "Getrennte Zeit:"
+GUI_LABEL_CONNECTIONS = "Verbindungen (#):"
+GUI_LABEL_DISCONNECTIONS = "Trennungen (#):"
+GUI_LABEL_AVG_LATENCY = "Ø-Latenz:"
+GUI_LABEL_DNS_STATUS = "DNS-Status:"
 GUI_LABEL_GATEWAY = "Gateway:"
 
 GUI_DEFAULT_DURATION = "0s"
 GUI_DEFAULT_COUNT = "0"
 GUI_DEFAULT_DASH = "-"
 
-GUI_BTN_SAVE = "Save Report Now"
-GUI_BTN_SAVING = "Saving..."
-GUI_BTN_SAVED = "Saved!"
-GUI_BTN_ERROR = "Error!"
+GUI_BTN_SAVE = "Bericht jetzt speichern"
+GUI_BTN_SAVING = "Speichert..."
+GUI_BTN_SAVED = "Gespeichert!"
+GUI_BTN_ERROR = "Fehler!"
 
-GUI_ELAPSED = "Elapsed: {elapsed}"
+GUI_ELAPSED = "Laufzeit: {elapsed}"
 GUI_LATENCY_FMT = "{latency:.0f} ms"
 GUI_DNS_OK = "OK ({latency:.0f}ms)"
-GUI_DNS_FAILED = "FAILED"
+GUI_DNS_FAILED = "FEHLGESCHLAGEN"
 GUI_GATEWAY_OK = "{ip} OK{latency}"
-GUI_GATEWAY_DOWN = "{ip} DOWN"
+GUI_GATEWAY_DOWN = "{ip} NICHT ERREICHBAR"
 
-GUI_SAVE_ERROR = "PDF save error: {error}"
+GUI_SAVE_ERROR = "PDF-Speicherfehler: {error}"
 
-# ── PDF report - titles, descriptions, labels ───────────────────────────
+# -- PDF-Bericht - Titel, Beschreibungen, Bezeichnungen -----------------
 
-PDF_TITLE = "Internet Connection Interruption Report"
+PDF_TITLE = "Bericht über Internetverbindungsunterbrechungen"
 PDF_SOURCE = (
-    "Source: https://github.com/ThePineappleExpress/"
+    "Quelle: https://github.com/ThePineappleExpress/"
     "InternetConnectionInterruptionMonitor"
 )
 
 PDF_CONFIDENTIALITY = (
-    "CONFIDENTIALITY NOTICE: This report contains sensitive network "
-    "information including public and local IP addresses, ISP identity, "
-    "geographic location, and system metadata. It is intended solely for "
-    "the recipient and for use in connection with service quality "
-    "complaints or legal proceedings. Unauthorized distribution, "
-    "reproduction, or publication of this report or its contents is "
-    "prohibited."
+    "VERTRAULICHKEITSHINWEIS: Dieser Bericht enthält sensible "
+    "Netzwerkinformationen, darunter öffentliche und lokale "
+    "IP-Adressen, ISP-Identität, geografischer Standort und "
+    "Systemmetadaten. Er ist ausschließlich für den Empfänger bestimmt "
+    "und dient zur Verwendung im Zusammenhang mit "
+    "Servicequalitätsbeschwerden oder rechtlichen Verfahren. "
+    "Unbefugte Verbreitung, Vervielfältigung oder Veröffentlichung "
+    "dieses Berichts oder seines Inhalts ist untersagt."
 )
 
 PDF_DESC_PARA1 = (
-    "  This report documents internet service interruptions recorded by "
-    "an automated, unattended monitoring system. The system continuously "
-    "tests connectivity by performing TCP handshake attempts to three "
-    "independent, globally distributed DNS servers (Cloudflare 1.1.1.1, "
-    "Google 8.8.8.8, Quad9 9.9.9.9) and verifies DNS resolution via "
-    "direct UDP queries, bypassing any local caching. A disconnection is "
-    "recorded only when ALL three targets are simultaneously unreachable, "
-    "eliminating the possibility of false positives."
+    "  Dieser Bericht dokumentiert Internetdienstunterbrechungen, die "
+    "von einem automatisierten, unbeaufsichtigten Überwachungssystem "
+    "erfasst wurden. Das System prüft die Konnektivität fortlaufend "
+    "durch TCP-Handshake-Versuche zu drei unabhängigen, weltweit "
+    "verteilten DNS-Servern (Cloudflare 1.1.1.1, Google 8.8.8.8, "
+    "Quad9 9.9.9.9) und verifiziert die DNS-Auflösung über direkte "
+    "UDP-Anfragen unter Umgehung jeglichen lokalen Cachings. Eine "
+    "Unterbrechung wird nur dann erfasst, wenn ALLE drei Ziele "
+    "gleichzeitig nicht erreichbar sind, wodurch Fehlalarme "
+    "ausgeschlossen werden."
 )
 
 PDF_DESC_PARA2 = (
-    "  All timestamps are machine-generated from the system clock at the "
-    "moment of each event. Measurement data is written in real time to "
-    "an append-only JSONL log file, ensuring crash-safety and providing "
-    "an independent, machine-readable evidence trail. The report "
-    "includes a SHA-256 cryptographic hash of its underlying data, "
-    "allowing independent verification of report integrity. No manual "
-    "input or subjective assessment is involved in any measurement."
+    "  Alle Zeitstempel werden maschinell aus der Systemuhr zum "
+    "Zeitpunkt jedes Ereignisses generiert. Messdaten werden in "
+    "Echtzeit in eine nur-anhängende JSONL-Logdatei geschrieben, "
+    "was Absturzsicherheit gewährleistet und eine unabhängige, "
+    "maschinenlesbare Beweisspur ermöglicht. Der Bericht enthält "
+    "einen kryptografischen SHA-256-Hash seiner zugrunde liegenden "
+    "Daten, der eine unabhängige Überprüfung der Berichtsintegrität "
+    "ermöglicht. Keine manuelle Eingabe oder subjektive Bewertung "
+    "ist an irgendeiner Messung beteiligt."
 )
 
-# Section headers
-PDF_SECTION_SUMMARY = "Summary"
-PDF_SECTION_CUSTOMER = "Customer Information"
-PDF_SECTION_METADATA = "Connection Metadata"
-PDF_SECTION_LATENCY = "Latency Statistics (TCP handshake)"
-PDF_SECTION_DNS = "DNS Resolution Statistics"
-PDF_SECTION_SNMP = "Router Diagnostics (SNMP)"
-PDF_SECTION_EVENTS = "Connection Events"
+# Abschnittsüberschriften
+PDF_SECTION_SUMMARY = "Zusammenfassung"
+PDF_SECTION_CUSTOMER = "Kundeninformationen"
+PDF_SECTION_METADATA = "Verbindungsmetadaten"
+PDF_SECTION_LATENCY = "Latenzstatistik (TCP-Handshake)"
+PDF_SECTION_DNS = "DNS-Auflösungsstatistik"
+PDF_SECTION_SNMP = "Router-Diagnose (SNMP)"
+PDF_SECTION_EVENTS = "Verbindungsereignisse"
 
-# Summary box labels
-PDF_LABEL_STARTED = "Monitoring started:"
-PDF_LABEL_ENDED = "Monitoring ended:"
-PDF_LABEL_TOTAL_TIME = "Total monitoring time:"
-PDF_LABEL_TOTAL_DOWNTIME = "Total downtime:"
-PDF_LABEL_UPTIME = "Uptime:"
-PDF_LABEL_NUM_OUTAGES = "Number of outages:"
+# Zusammenfassungsbox - Bezeichnungen
+PDF_LABEL_STARTED = "Überwachung gestartet:"
+PDF_LABEL_ENDED = "Überwachung beendet:"
+PDF_LABEL_TOTAL_TIME = "Gesamte Überwachungszeit:"
+PDF_LABEL_TOTAL_DOWNTIME = "Gesamte Ausfallzeit:"
+PDF_LABEL_UPTIME = "Verfügbarkeit:"
+PDF_LABEL_NUM_OUTAGES = "Anzahl der Ausfälle:"
 
-# Customer info box labels
+# Kundeninformationsbox - Bezeichnungen
 PDF_LABEL_NAME = "Name:"
-PDF_LABEL_ADDRESS = "Address:"
-PDF_LABEL_ZIP_CITY = "ZIP/City:"
-PDF_LABEL_PHONE = "Phone number:"
-PDF_LABEL_CUSTOMER_NR = "Customer nr:"
-PDF_LABEL_CONTRACT_NR = "Contract nr:"
+PDF_LABEL_ADDRESS = "Adresse:"
+PDF_LABEL_ZIP_CITY = "PLZ/Ort:"
+PDF_LABEL_PHONE = "Telefonnummer:"
+PDF_LABEL_CUSTOMER_NR = "Kundennr.:"
+PDF_LABEL_CONTRACT_NR = "Vertragsnr.:"
 
-# Metadata box labels
-PDF_LABEL_PUBLIC_IP = "Public IP:"
+# Metadatenbox - Bezeichnungen
+PDF_LABEL_PUBLIC_IP = "Öffentliche IP:"
 PDF_LABEL_ISP = "ISP:"
-PDF_LABEL_LOCATION = "Location:"
-PDF_LABEL_LOCAL_IP = "Local IP:"
+PDF_LABEL_LOCATION = "Standort:"
+PDF_LABEL_LOCAL_IP = "Lokale IP:"
 PDF_LABEL_HOSTNAME = "Hostname:"
-PDF_LABEL_OS = "OS:"
-PDF_LABEL_TARGETS = "Targets:"
-PDF_LABEL_DNS_DOMAIN = "DNS test domain:"
-PDF_LABEL_CHECK_INTERVAL = "Check interval:"
+PDF_LABEL_OS = "Betriebssystem:"
+PDF_LABEL_TARGETS = "Ziele:"
+PDF_LABEL_DNS_DOMAIN = "DNS-Testdomäne:"
+PDF_LABEL_CHECK_INTERVAL = "Prüfintervall:"
 
-# Latency box labels
-PDF_LABEL_SAMPLES = "Samples:"
-PDF_LABEL_AVERAGE = "Average:"
+# Latenzbox - Bezeichnungen
+PDF_LABEL_SAMPLES = "Messungen:"
+PDF_LABEL_AVERAGE = "Durchschnitt:"
 PDF_LABEL_MIN_MAX = "Min / Max:"
 PDF_LABEL_P50_P95 = "P50 / P95:"
-PDF_NO_LATENCY = "No latency data collected."
+PDF_NO_LATENCY = "Keine Latenzdaten erfasst."
 
-# DNS box labels
-PDF_LABEL_TEST_DOMAIN = "Test domain:"
-PDF_LABEL_LOOKUPS = "Successful lookups:"
-PDF_LABEL_DNS_LATENCY = "Avg DNS latency:"
-PDF_LABEL_DNS_FAILURES = "DNS failures (TCP OK):"
+# DNS-Box - Bezeichnungen
+PDF_LABEL_TEST_DOMAIN = "Testdomäne:"
+PDF_LABEL_LOOKUPS = "Erfolgreiche Abfragen:"
+PDF_LABEL_DNS_LATENCY = "Ø DNS-Latenz:"
+PDF_LABEL_DNS_FAILURES = "DNS-Fehler (TCP OK):"
 
-# SNMP box labels
+# SNMP-Box - Bezeichnungen
 PDF_LABEL_ROUTER = "Router:"
-PDF_LABEL_AGENT_REACHABLE = "Agent reachable:"
-PDF_LABEL_SYS_UPTIME = "System uptime:"
-PDF_LABEL_WAN_IFACE = "WAN interface:"
-PDF_LABEL_IFACE_STATUS = "Interface status:"
-PDF_LABEL_TRAFFIC_IN = "Traffic in:"
-PDF_LABEL_TRAFFIC_OUT = "Traffic out:"
-PDF_LABEL_ERRORS_INOUT = "Errors in/out:"
-PDF_LABEL_DISCARDS_INOUT = "Discards in/out:"
+PDF_LABEL_AGENT_REACHABLE = "Agent erreichbar:"
+PDF_LABEL_SYS_UPTIME = "Systemlaufzeit:"
+PDF_LABEL_WAN_IFACE = "WAN-Schnittstelle:"
+PDF_LABEL_IFACE_STATUS = "Schnittstellenstatus:"
+PDF_LABEL_TRAFFIC_IN = "Datenverkehr ein:"
+PDF_LABEL_TRAFFIC_OUT = "Datenverkehr aus:"
+PDF_LABEL_ERRORS_INOUT = "Fehler ein/aus:"
+PDF_LABEL_DISCARDS_INOUT = "Verwürfe ein/aus:"
 
-# SNMP ifOperStatus display names
+# SNMP ifOperStatus - Anzeigenamen
 SNMP_OPER_STATUS = {
-    1: "up", 2: "down", 3: "testing", 4: "unknown",
-    5: "dormant", 6: "notPresent", 7: "lowerLayerDown",
+    1: "aktiv", 2: "inaktiv", 3: "Test", 4: "unbekannt",
+    5: "ruhend", 6: "nicht vorhanden", 7: "untere Schicht inaktiv",
 }
 
-# Event table
+# Ereignistabelle
 PDF_NO_OUTAGES = (
-    "No outages recorded - connection was stable "
-    "for the entire period."
+    "Keine Ausfälle aufgezeichnet - die Verbindung war "
+    "während des gesamten Zeitraums stabil."
 )
-PDF_TBL_HEADERS = ["#", "Event", "Time", "Duration",
-                   "DNS", "Cause", "IP", "ISP", "Location"]
+PDF_TBL_HEADERS = ["#", "Ereignis", "Zeit", "Dauer",
+                   "DNS", "Ursache", "IP", "ISP", "Standort"]
 
-PDF_EVENT_DOWN = "DOWN"
-PDF_EVENT_UP = "UP"
+PDF_EVENT_DOWN = "AUSFALL"
+PDF_EVENT_UP = "WIEDER DA"
 PDF_DNS_OK = "OK"
-PDF_DNS_FAIL = "FAIL"
+PDF_DNS_FAIL = "FEHLER"
 PDF_CAUSE_ISP = "ISP"
 PDF_CAUSE_ROUTER = "Router"
 PDF_CAUSE_UNKNOWN = "-"
 
-# Shared short strings
-PDF_YES = "Yes"
-PDF_NO = "No"
-PDF_NA = "N/A"
+# Gemeinsame Kurztexte
+PDF_YES = "Ja"
+PDF_NO = "Nein"
+PDF_NA = "k. A."
 
-# Footer
+# Fußzeile
 PDF_FOOTER = (
-    "Report generated on {date}  |  "
-    "Targets: {targets}  |  "
-    "Interval: {interval}s"
+    "Bericht erstellt am {date}  |  "
+    "Ziele: {targets}  |  "
+    "Intervall: {interval}s"
 )
 PDF_HASH_LABEL = "SHA-256: {hash}"
 
-# Console output after PDF save
+# Konsolenausgabe nach PDF-Speicherung
 PDF_SAVE_SEPARATOR = "-" * 60
-PDF_SAVE_MSG = "  PDF report saved -> {filename}"
+PDF_SAVE_MSG = "  PDF-Bericht gespeichert -> {filename}"
 PDF_SAVE_HASH = "  SHA-256: {hash}"
 
-# ── Network - TLS pinning messages ──────────────────────────────────────
+# -- Netzwerk - TLS-Pinning-Meldungen -----------------------------------
 
-NET_TLS_PIN_LEARNED = "  TLS pin   : learned ({hash}...)"
+NET_TLS_PIN_LEARNED = "  TLS-Pin   : gelernt ({hash}...)"
 NET_TLS_PIN_MISMATCH = (
-    "ipinfo.io certificate public key changed! "
-    "Expected {expected}, got {actual}. "
-    "If this is expected (key rotation), "
-    "delete '{pin_file}' to re-learn."
+    "Öffentlicher Schlüssel des ipinfo.io-Zertifikats hat sich geändert! "
+    "Erwartet: {expected}, erhalten: {actual}. "
+    "Falls erwartet (Schlüsselrotation), "
+    "'{pin_file}' löschen zum Neulernen."
 )
 NET_USER_AGENT = "InternetMonitor/1.0"
