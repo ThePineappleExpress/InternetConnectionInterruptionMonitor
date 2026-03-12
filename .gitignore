@@ -1,0 +1,8 @@
+*.pdf
+*.json
+*.jsonl
+venv/
+.venv/
+__pycache__/
+*.pyc
+.ipinfo_cert_pin
