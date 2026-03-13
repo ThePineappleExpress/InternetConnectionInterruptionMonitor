@@ -17,7 +17,7 @@
 5. [JSONL Event Log](#jsonl-event-log)
 6. [PDF Report Contents](#pdf-report-contents)
 7. [SHA-256 Integrity Hash](#sha-256-integrity-hash)
-8. [Automatic Daily Reports](#automatic-daily-reports)
+8. [Automatic Report Updates](#automatic-report-updates)
 9. [Security Measures](#security-measures)
 10. [Why This Evidence Is Reliable](#why-this-evidence-is-reliable)
 11. [Installation & Usage](#installation--usage)
@@ -239,8 +239,8 @@ This state-machine approach means:
 2. **Monitoring**: Runs indefinitely, checking all targets + DNS every 5 seconds.
    The GUI updates live statistics every 1 second.
 
-3. **Daily reports**: At midnight each day, the daily PDF report is updated
-   with the latest data, without interrupting monitoring.
+3. **Automatic report updates**: At midnight each day, the PDF report is
+   updated with the latest data, without interrupting monitoring.
 
 4. **Shutdown** (any of these triggers):
    - User closes the GUI window
@@ -312,9 +312,9 @@ and how often.
 Alongside PDF reports, the monitor writes a **real-time JSONL (JSON Lines)**
 log file. Each line is a self-contained JSON object with a `type` field.
 
-**Filename pattern:** `connection_log_YYYYMMDD.jsonl`
+**Filename:** `connection_log.jsonl`
 
-Like the PDF, there is **one JSONL file per calendar day**. If the monitor
+There is a single JSONL file that persists across restarts. If the monitor
 is restarted, it appends to the existing file and **resumes accumulated
 state** (events, downtime, latency/DNS samples) so no data is lost.
 
@@ -429,26 +429,22 @@ hash is computed over the canonical JSON representation of the report data:
 
 ---
 
-## Automatic Daily Reports
+## Automatic Report Updates
 
-The monitor produces **one PDF per calendar day**, named
-`internet_report_YYYYMMDD.pdf`. Every save operation (manual snapshot,
-midnight auto-save, or final report on shutdown) **overwrites** the same
-file for the current date with the latest accumulated data.
+The monitor produces a single PDF report, `internet_report.pdf`. Every
+save operation (manual snapshot, midnight auto-save, or final report on
+shutdown) **overwrites** this file with the latest accumulated data.
 
-- Named `internet_report_YYYYMMDD.pdf` (date only, no timestamp)
-- Contain all data accumulated since monitoring started
-- Are generated without interrupting the monitoring process
+- Named `internet_report.pdf` (fixed name, no date suffix)
+- Contains all data accumulated since monitoring started
+- Generated without interrupting the monitoring process
 - Automatically updated at midnight, on manual save, and on shutdown
-- Protect against data loss if the script is unexpectedly terminated
+- Protects against data loss if the script is unexpectedly terminated
 
-This means even if the script runs for weeks, you always have a single,
-up-to-date PDF for each day.
-
-The same applies to the **JSONL log file** - one file per day, appended
-across restarts. On startup the monitor parses the existing log and
-restores all prior events, downtime, and latency/DNS samples so the
-next PDF report includes the full day's data.
+The same applies to the **JSONL log file** (`connection_log.jsonl`) -
+a single file, appended across restarts. On startup the monitor parses
+the existing log and restores all prior events, downtime, and
+latency/DNS samples so the next PDF report includes the full history.
 
 ---
 
@@ -585,6 +581,35 @@ source venv/bin/activate
 uv add -r requirements.txt
 ```
 
+### User Configuration (`user.py`)
+
+Before running, create a `user.py` file with your personal and contract
+details. These are embedded in the generated PDF report to identify the
+complainant and the associated service contract.
+
+> **Note:** `user.py` is listed in `.gitignore` and will **not** be
+> uploaded to GitHub. You must create it manually.
+
+```python
+"""User-specific details for PDF reports."""
+
+NAME = "Your Name"
+ADDRESS = "Your Street and Number"
+ZIP_CITY = "12345 Your City"
+PHONE_NUMBER = "+49 123 4567890"
+CUSTOMER_NR = "Your customer number"
+CONTRACT_NR = "Your contract number"
+```
+
+| Field          | Purpose                                              |
+|----------------|------------------------------------------------------|
+| `NAME`         | Full name of the account holder                      |
+| `ADDRESS`      | Street address                                       |
+| `ZIP_CITY`     | ZIP code and city                                    |
+| `PHONE_NUMBER` | Contact phone number                                 |
+| `CUSTOMER_NR`  | ISP customer/account number                          |
+| `CONTRACT_NR`  | ISP contract/service number                          |
+
 ### Running
 
 ```bash
@@ -595,14 +620,14 @@ python main.py
 - The monitor runs **indefinitely** until you close the window or press `Ctrl+C` in the terminal.
 - Click **"Save Report Now"** at any time to update today's PDF report.
 - The PDF is automatically updated at midnight and when the monitor stops.
-- There is one PDF per day (`internet_report_YYYYMMDD.pdf`); subsequent saves overwrite it with the latest data.
+- The PDF (`internet_report.pdf`) is overwritten on each save with the latest data.
 
 ### Output Files
 
 | File                                    | Description                          |
 |-----------------------------------------|--------------------------------------|
-| `internet_report_YYYYMMDD.pdf`          | Daily report (overwritten on each save) |
-| `connection_log_YYYYMMDD.jsonl`         | Daily event log (appended on restart)   |
+| `internet_report.pdf`                   | Report (overwritten on each save)    |
+| `connection_log.jsonl`                  | Event log (appended on restart)      |
 
 ---
 
@@ -665,6 +690,7 @@ ICIM/
 ├── snmp.py                          # Raw SNMPv2c GET - router counter polling (no external deps)
 ├── report.py                        # PDF report generation with fpdf2 and SHA-256 integrity hash
 ├── config.py                        # All tunable constants (intervals, targets, timeouts, filenames)
+├── user.py                          # User/contract details for PDF reports (NOT in repo, see README)
 ├── text.py                          # Centralized user-facing text strings for all modules
 ├── utils.py                         # Shared helpers (format_duration, pdf_safe, snmp_safe)
 ├── pyproject.toml                   # Project metadata and dependencies
@@ -672,9 +698,9 @@ ICIM/
 ├── README.md                        # This file
 ├── LICENSE                          # GPL-3.0 license text
 ├── .gitignore                       # Git ignore rules
-├── connection_log_*.jsonl           # Real-time event logs (generated at runtime)
+├── connection_log.jsonl             # Real-time event log (appended across restarts)
 ├── .ipinfo_cert_pin                 # TLS certificate pin for ipinfo.io (TOFU, generated at runtime)
-└── internet_report_*.pdf            # One PDF per day (generated at runtime)
+└── internet_report.pdf              # PDF report (overwritten on each save)
 ```
 
 ---

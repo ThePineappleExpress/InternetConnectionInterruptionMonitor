@@ -6,3 +6,4 @@ venv/
 __pycache__/
 *.pyc
 .ipinfo_cert_pin
+user.py

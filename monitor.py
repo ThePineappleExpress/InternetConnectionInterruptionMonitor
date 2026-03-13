@@ -101,13 +101,12 @@ class InternetMonitor:
             maxlen=self._MAX_SAMPLES,
         )
 
-        # JSON log file - one per calendar day, resume-aware
-        today_str = self.start_time.astimezone().strftime("%Y%m%d")
-        raw_name = LOG_FILENAME.format(date=today_str)
+        # JSON log file - single file, resume-aware
+        raw_name = LOG_FILENAME
         # Ensure the filename stays in the current directory (no path traversal)
         self._log_filename = os.path.basename(raw_name)
         if not re.match(r'^[\w.\-]+$', self._log_filename):
-            self._log_filename = f"connection_log_{today_str}.jsonl"
+            self._log_filename = "connection_log.jsonl"
         self._check_counter = 0
 
         # Restore state from today's existing log (if any)

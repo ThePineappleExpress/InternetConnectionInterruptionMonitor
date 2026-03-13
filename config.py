@@ -16,8 +16,8 @@ PING_TARGETS = [                # multiple targets for robust detection
 ]
 PING_TIMEOUT = 3                # seconds
 DNS_TEST_DOMAIN = "google.com"
-PDF_FILENAME = "internet_report_{date}.pdf"
-LOG_FILENAME = "connection_log_{date}.jsonl"
+PDF_FILENAME = "internet_report.pdf"
+LOG_FILENAME = "connection_log.jsonl"
 LOG_CHECK_EVERY = 12            # log a "check" entry every N checks (60s at 5s interval)
 
 # --- Gateway / Router diagnostics -------------------------------------------

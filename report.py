@@ -500,8 +500,7 @@ def generate_pdf(monitor: InternetMonitor, end_time: datetime | None = None,
                 pdf.ln()
 
     # -- Write file -------------------------------------------------------
-    date_str = local_now.strftime("%Y%m%d")
-    filename = PDF_FILENAME.format(date=date_str)
+    filename = PDF_FILENAME
     pdf.output(filename)
     os.chmod(filename, 0o600)
     print(f"\n{PDF_SAVE_SEPARATOR}")
