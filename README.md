@@ -28,17 +28,18 @@
 ---
 
 ## Overview
+
 **The README is deliberately verbose for legal/evidentiary purposes.**
 This script runs on a local computer connected to the customer's internet
-service. It continuously tests whether the internet connection is functional 
+service. It continuously tests whether the internet connection is functional
 by attempting to reach **three independent, well-known external servers**
-simultaneously. Every time the connection drops or recovers, the event 
+simultaneously. Every time the connection drops or recovers, the event
 is recorded with a precise timestamp. In addition to connectivity, the tool
 measures **TCP handshake latency** and **DNS resolution** on every check cycle.
 
-All events are written in real-time to a **JSONL (JSON Lines) log file** 
-for tamper-evident, machine-readable record keeping. When monitoring 
-is stopped (or at any time via the "Save Report Now" button, 
+All events are written in real-time to a **JSONL (JSON Lines) log file**
+for tamper-evident, machine-readable record keeping. When monitoring
+is stopped (or at any time via the "Save Report Now" button,
 or automatically at midnight), a formatted PDF report is generated containing:
 
 - Exact times of every disconnection and reconnection
@@ -52,7 +53,7 @@ or automatically at midnight), a formatted PDF report is generated containing:
 - **TLS certificate pinning** for external API requests
 - SHA-256 integrity hash of the report data
 
-The report serves as **objective, machine-generated evidence** of the quality 
+The report serves as **objective, machine-generated evidence** of the quality
 of service actually delivered versus what was contractually promised.
 
 ---
@@ -76,10 +77,10 @@ against **three independent targets simultaneously**:
   (however unlikely) could be argued as a false positive.
 
 - With three independent providers on three different networks, the probability
-  of all three being simultaneously unreachable due to anything other than 
+  of all three being simultaneously unreachable due to anything other than
   a local/ISP network failure is astronomically low.
 
-- The connection is considered **DOWN** only when **ALL three targets** 
+- The connection is considered **DOWN** only when **ALL three targets**
   are unreachable. If even one responds, the connection is considered **UP**.
 
 - This makes false positives essentially impossible and the evidence
@@ -98,7 +99,7 @@ against **three independent targets simultaneously**:
 
 Every TCP connection attempt that succeeds also measures the **handshake
 latency** - the time from initiating the connection to completing the TCP
-three-way handshake. This is recorded in milliseconds 
+three-way handshake. This is recorded in milliseconds
 and aggregated into statistics:
 
 - **Average latency** across the entire monitoring session
@@ -112,13 +113,13 @@ and aggregated into statistics:
 High latency (even without full disconnections) can constitute degraded service
 and may be relevant to QoS complaints.
 
-### DNS Resolution Test /home/feedmeweed/projects/InternetConnectionInterruptionMonitor/venv/bin/python /home/feedmeweed/projects/InternetConnectionInterruptionMonitor/main.py
+### DNS Resolution Test
 
 Every check cycle also tests **DNS resolution** by sending a **raw UDP DNS
-query** directly to 1.1.1.1:53, requesting the A record for `google.com`. 
-This is critically different from using the operating system's built-in 
+query** directly to 1.1.1.1:53, requesting the A record for `google.com`.
+This is critically different from using the operating system's built-in
 name resolution (`gethostbyname`), which consults a local DNS cache. Cached
-results can return "OK" even when the connection is completely down 
+results can return "OK" even when the connection is completely down
 (e.g. during a PPPoE disconnect), producing false positives.
 
 By constructing and sending the DNS packet manually over UDP, the test:
@@ -335,10 +336,10 @@ state** (events, downtime, latency/DNS samples) so no data is lost.
 
 - **Machine-readable**: Can be parsed, queried, and verified programmatically.
 
-- **Tamper-evident**: Modifying entries in the middle of the file would 
+- **Tamper-evident**: Modifying entries in the middle of the file would
   be detectable by inconsistent timestamps or gaps.
 
-- **Complements the PDF**: The PDF is human-readable; the JSONL 
+- **Complements the PDF**: The PDF is human-readable; the JSONL
   is the raw data source that can be independently verified.
 
 ---
@@ -348,9 +349,11 @@ state** (events, downtime, latency/DNS samples) so no data is lost.
 Each generated PDF contains the following sections:
 
 ### 1. Title
+
 "Internet Connection Report"
 
 ### 2. Summary Box
+
 - Monitoring start and end timestamps
 - Total monitoring duration
 - Total accumulated downtime
@@ -358,22 +361,26 @@ Each generated PDF contains the following sections:
 - Number of outages recorded
 
 ### 3. Connection Metadata Box
+
 - All metadata fields (public IP, ISP, location, local IP, hostname, OS,
   all three targets, DNS test domain, check interval, timeout)
 
 ### 4. Latency Statistics Box
+
 - Total number of latency samples collected
 - Average TCP handshake latency
 - Minimum / Maximum latency
 - P50 (median) / P95 (95th percentile) latency
 
 ### 5. DNS Resolution Statistics Box
+
 - Test domain used
 - Number of successful DNS lookups
 - Average DNS resolution latency
 - Number of DNS failures (while TCP was working)
 
 ### 6. Router Diagnostics Box (SNMP, when enabled)
+
 - Router host and interface index
 - SNMP agent reachability
 - System uptime (formatted from timeticks)
@@ -401,6 +408,7 @@ malicious or malformed SNMP responses.
 - **IP / ISP / Location** - Shown only when changed after reconnection
 
 ### 8. Footer
+
 - Report generation timestamp
 - All target hosts listed
 - Check interval
@@ -455,11 +463,13 @@ legal proceedings, data integrity and security are taken seriously. The
 following measures are implemented:
 
 ### File Permissions
+
 - JSONL log files are created with **owner-only permissions** (`0o600`)
 - PDF reports have `os.chmod(filename, 0o600)` applied after generation
 - Output files contain sensitive metadata (IP addresses, ISP, location)
 
 ### TLS Certificate Pinning (TOFU)
+
 - Connections to `ipinfo.io` use **SPKI (Subject Public Key Info) pinning**
 - On first connection, the SHA-256 hash of the server's public key is learned
   and saved to `.ipinfo_cert_pin`
@@ -469,16 +479,19 @@ following measures are implemented:
 - To re-learn after a legitimate key rotation, delete `.ipinfo_cert_pin`
 
 ### Cryptographic Randomness
+
 - DNS transaction IDs use `secrets.randbelow()` instead of `random.randint()`
 - SNMP request IDs use `secrets.randbelow()` for unpredictable values
 - Prevents prediction-based spoofing of DNS/SNMP responses
 
 ### Response Verification
+
 - DNS responses are verified against the original transaction ID
 - SNMP responses are verified against the original request ID
 - Spoofed network responses with mismatched IDs are rejected
 
 ### Input Validation
+
 - `ipinfo.io` responses are validated (IP format regex, string length caps)
 - Gateway detection subprocess output is validated as a proper IP address
 - SNMP string values are sanitized (control chars stripped, length-capped)
@@ -486,15 +499,18 @@ following measures are implemented:
 - Log filenames are restricted to the current directory via `os.path.basename()`
 
 ### Rate Limiting
+
 - `ipinfo.io` results are cached for 60 seconds to prevent rapid-fire
   requests during connection flapping
 
 ### SNMP Community String
+
 - Loaded from the `SNMP_COMMUNITY` environment variable (not hardcoded)
 - Falls back to `"public"` if unset
 - Note: SNMPv2c transmits the community string in cleartext (protocol limitation)
 
 ### Memory Safety
+
 - All sample collections use bounded `deque` structures (max 50,000 entries)
 - Event and DNS failure lists are also bounded to prevent memory exhaustion
   during long-running sessions
@@ -756,4 +772,3 @@ GNU General Public License for more details.
 ```
 
 ---
-
